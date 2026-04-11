@@ -7,7 +7,13 @@ public class Tutor extends User {
     //private
     private boolean[] avaliability = new boolean[31];
 
-    public Tutor() {
+    public Tutor(String name, String email, int ID) {
+        super(name, email, ID);
+        this.randomizeAvailabity();
+    }
+
+    public Tutor(String name, String email) {
+        super(name, email);
         this.randomizeAvailabity();
     }
 
@@ -40,7 +46,16 @@ public class Tutor extends User {
         Random random = new Random();
         for (int i = 0; i < 31; i++) {
             this.avaliability[i] = random.nextBoolean();
+            // Is this valid?
         }
+    }
+
+    public void setTutoringSubjects(List<String> subjects) {
+        this.tutoringSubjects = subjects;
+    }
+
+    public void addSubject(String subject) {
+        tutoringSubjects.add(subject);
     }
 
 }
