@@ -1,0 +1,2 @@
+1. Changed tutor avaliability from boolean[] -> BitMap
+2. Databaser -> Database
