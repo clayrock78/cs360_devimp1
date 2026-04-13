@@ -1,50 +1,37 @@
 public class Appointment {
-    private boolean confirmedByTutor;
+
     private Student student;
     private Tutor tutor;
-    private int date; // from 0 to 31
-
-    private AppointmentNote appointmentNote;
-    private StudentNote studentNote;
+    private int date;
+    private Boolean confirmed = false;
 
     public Appointment(Student student, Tutor tutor) {
-        setTutor(tutor);
-        setStudent(student);
-    }   
+        this.student = student;
+        this.tutor = tutor;
+    }
 
-    public void setDate(int date) {
+    public Student getStudent() {
+        return student;
+    }
+
+    public Tutor getTutor() {
+        return tutor;
+    }
+
+    public int getDate() {
+        return date;
+    }
+
+    
+public void setDate(int date) {
         if (0 < date || date > 31) {
             throw new IllegalArgumentException();
         }
         this.date = date;
     }
 
-    public int getDate() {
-        return this.date;
-    }
-
-    private void setTutor(Tutor tutor) {
-        this.tutor = tutor;
-    }
-
-    public Tutor getTutor(){
-        return this.tutor;
-    }
-
-    private void setStudent(Student student) {
-        this.student = student;
-    }
-
-    public Student getStudent() {
-        return this.student;
-    }
-
-    public void markAsConfirmed() {
-        System.out.println("Appointment confirmed by tutor");
-        this.confirmedByTutor = true;
-    }
-
-    public boolean getConfirmationStatus() {
-        return this.confirmedByTutor;
-    }
+public void markAsConfirmed() {
+    // TODO Auto-generated method stub
+    this.confirmed = true;
+}
 }

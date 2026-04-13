@@ -13,4 +13,15 @@ public class NotificationService {
             appointment.getStudent().getEmail()
         );
     }
+
+    public void notifyBooking(Tutor tutor, Student student) {
+
+        System.out.println("Email sent to tutor: " + tutor.getName());
+        System.out.println("Email sent to student: " + student.getName());
+    }
+
+    public void notifyReview(Tutor tutor, Student student, String review) {
+
+        System.out.println("Tutor notified of review from " + student.getName());
+    }
 }
