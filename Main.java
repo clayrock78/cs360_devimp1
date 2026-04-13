@@ -56,6 +56,7 @@ public class Main {
             System.out.println("2 Search tutors by subject");
             System.out.println("3 Book appointment");
             System.out.println("4 Leave review");
+            System.out.println("5 View tutor availability");
             System.out.println("0 Exit");
 
             int choice = Integer.parseInt(scanner.nextLine());
@@ -85,6 +86,10 @@ public class Main {
 
                 case 4:
                     leaveReview(student);
+                    break;
+
+                case 5:
+                    printTutorAvailability();
                     break;
 
                 case 0:
@@ -155,6 +160,24 @@ public class Main {
             System.out.println("Tutor not found.");
         } catch (Exception e) {
             System.out.println(e.getMessage());
+        }
+    }
+
+    private static void printTutorAvailability() {
+        System.out.print("Enter tutor name: ");
+        String name = scanner.nextLine();
+
+        try {
+
+            List<Tutor> tutors = tutorCatalog.findTutorsByName(name);
+
+            for (Tutor tutor: tutors) {
+                tutor.printAvailability();
+            }
+
+        } catch (TutorNotFoundException e) {
+
+            System.out.println("Tutor not found.");
         }
     }
 
