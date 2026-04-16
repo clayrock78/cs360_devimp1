@@ -1,10 +1,11 @@
 public class TutorNotFoundException extends IllegalArgumentException {
 
-    public TutorNotFoundException(String message) {
-        super(message);
+    TutorNotFoundException(String string) {
+        throw new IllegalArgumentException(string);
     }
 
     public TutorNotFoundException() {
-        super();
+        //TODO Auto-generated constructor stub
     }
+
 }

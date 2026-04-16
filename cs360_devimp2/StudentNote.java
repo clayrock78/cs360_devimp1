@@ -1,7 +1,7 @@
+// student-read only 
 public class StudentNote extends SessionNote {
-
-    @Override
-    public void setNote(String note) {
+    
+    public void setNote(String newNote){
         System.out.println("students cannot edit notes.");
     }
 }

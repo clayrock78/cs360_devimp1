@@ -4,7 +4,7 @@ import java.util.List;
 
 public class TutorCatalog extends Database {
 
-    private final List<Tutor> tutors;
+    private List<Tutor> tutors;
 
     public TutorCatalog() {
         tutors = new ArrayList<>();
@@ -15,8 +15,8 @@ public class TutorCatalog extends Database {
         tutors.add(newTutor);
     }
 
-    public void removeTutor(Tutor tutorToRemove) {
-        boolean wasRemoved = tutors.remove(tutorToRemove);
+    public void removeTutor(Tutor toRemove) {
+        boolean wasRemoved = tutors.remove(toRemove);
 
         if (!wasRemoved) {
             throw new TutorNotFoundException();
@@ -30,7 +30,7 @@ public class TutorCatalog extends Database {
     public Tutor findTutorByName(String name) throws TutorNotFoundException {
 
         for (Tutor tutor : tutors) {
-            if (hasExactNameMatch(tutor, name)) {
+            if (tutor.getName().equalsIgnoreCase(name)) {
                 return tutor;
             }
         }
@@ -39,18 +39,14 @@ public class TutorCatalog extends Database {
     }
 
     public List<Tutor> findTutorsByName(String name) throws TutorNotFoundException {
-        List<Tutor> matchingTutors = new ArrayList<>();
+        List<Tutor> Tutors = new ArrayList<>();
         for (Tutor tutor : tutors) {
-            if (hasPartialNameMatch(tutor, name)) {
-                matchingTutors.add(tutor);
+            if (tutor.getName().toLowerCase().contains(name.toLowerCase())) {
+                Tutors.add(tutor);
             }
         }
 
-        if (matchingTutors.isEmpty()) {
-            throw new TutorNotFoundException("No tutor found with name: " + name);
-        }
-
-        return matchingTutors;
+        return Tutors;
     }
 
     public List<Tutor> findBestTutorsBySubjects(List<String> requestedSubjects) {
@@ -66,7 +62,8 @@ public class TutorCatalog extends Database {
                 matches.clear();
                 matches.add(tutor);
                 highestScore = score;
-            } else if (score == highestScore && score > 0) {
+            }
+            else if (score == highestScore && score > 0) {
                 matches.add(tutor);
             }
         }
@@ -78,42 +75,40 @@ public class TutorCatalog extends Database {
 
         int count = 0;
 
-        for (String requestedSubject : requestedSubjects) {
-            if (hasSubjectMatch(tutor, requestedSubject)) {
-                count++;
+        for (String requested : requestedSubjects) {
+
+            for (String tutorSubject : tutor.getTutoringSubjects()) {
+
+                if (tutorSubject.equalsIgnoreCase(requested)) {
+                    count++;
+                    break;
+                }
             }
         }
 
         return count;
     }
 
-    private boolean hasExactNameMatch(Tutor tutor, String name) {
-        return tutor.getName().equalsIgnoreCase(name);
-    }
-
-    private boolean hasPartialNameMatch(Tutor tutor, String name) {
-        return tutor.getName().toLowerCase().contains(name.toLowerCase());
-    }
-
-    private boolean hasSubjectMatch(Tutor tutor, String requestedSubject) {
-        for (String tutorSubject : tutor.getTutoringSubjects()) {
-            if (tutorSubject.equalsIgnoreCase(requestedSubject)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
+    /**
+     * Seed some tutors so searches work in oreu demo
+     */
     private void populateSampleTutors() {
-        addSampleTutor("Marcus Weemer", "marcus@pfw.edu", Arrays.asList("Math", "Physics"));
-        addSampleTutor("Sarah Chen", "sarah@pfw.edu", Arrays.asList("Computer Science", "Java"));
-        addSampleTutor("David Lopez", "david@pfw.edu", Arrays.asList("Chemistry", "Biology"));
-        addSampleTutor("Emily Carter", "emily@pfw.edu", Arrays.asList("Math", "Statistics"));
-    }
 
-    private void addSampleTutor(String name, String email, List<String> subjects) {
-        Tutor tutor = new Tutor(name, email);
-        tutor.setTutoringSubjects(subjects);
-        addTutor(tutor);
+        Tutor t1 = new Tutor("Marcus Weemer", "marcus@pfw.edu");
+        t1.setTutoringSubjects(Arrays.asList("Math", "Physics"));
+
+        Tutor t2 = new Tutor("Sarah Chen", "sarah@pfw.edu");
+        t2.setTutoringSubjects(Arrays.asList("Computer Science", "Java"));
+
+        Tutor t3 = new Tutor("David Lopez", "david@pfw.edu");
+        t3.setTutoringSubjects(Arrays.asList("Chemistry", "Biology"));
+
+        Tutor t4 = new Tutor("Emily Carter", "emily@pfw.edu");
+        t4.setTutoringSubjects(Arrays.asList("Math", "Statistics"));
+
+        addTutor(t1);
+        addTutor(t2);
+        addTutor(t3);
+        addTutor(t4);
     }
 }

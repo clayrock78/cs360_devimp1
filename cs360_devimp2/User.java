@@ -1,41 +1,39 @@
 public class User {
     private String name;
     private String email;
-    private static int nextUserId = 0;
-    private final int id;
+    private static int userCount = 0;
+    private int ID;
 
     public void setName(String name) {
         this.name = name;
     }
-
     public String getName() {
         return name;
     }
 
     public String getEmail() {
-        return email;
+        return this.email;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public int getID() {
-        return getId();
+    public int getID(){
+        return this.ID;
     }
 
     public void setEmail(String email) {
         this.email = email;
     }
 
-    public User(String name, String email, int id) {
+    User(String name, String email, int ID){
         this.name = name;
         this.email = email;
-        this.id = id;
-        nextUserId = Math.max(nextUserId, id + 1);
+        this.ID = ID;
+        User.userCount += 1;
     }
 
-    public User(String name, String email) {
-        this(name, email, nextUserId);
+    User(String name, String email){
+        this.name = name;
+        this.email = email;
+        this.ID = User.userCount;
     }
+
 }
