@@ -1,62 +1,64 @@
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 import java.util.Random;
 
 public class Tutor extends User {
 
-    private List<String> tutoringSubjects;
-    //private
-    private BitSet avaliability = new BitSet(31);
+    private static final int DAYS_IN_MONTH = 31;
 
-    public Tutor(String name, String email, int ID) {
-        super(name, email, ID);
-        this.randomizeAvailabity();
+    private List<String> tutoringSubjects = new ArrayList<>();
+    private final BitSet availability = new BitSet(DAYS_IN_MONTH);
+
+    public Tutor(String name, String email, int id) {
+        super(name, email, id);
+        randomizeAvailability();
     }
 
     public Tutor(String name, String email) {
         super(name, email);
-        this.randomizeAvailabity();
+        randomizeAvailability();
     }
 
+    @Override
     public void setName(String name) {
         if (name.length() < 5 || name.length() > 32) {
             throw new IllegalArgumentException();
         }
-        this.setName(name);
+        super.setName(name);
     }
 
-
     public List<String> getTutoringSubjects() {
-        return this.tutoringSubjects;
+        return tutoringSubjects;
     }
 
     public void addTutoringSubject(String subject) {
-        this.tutoringSubjects.add(subject);
+        tutoringSubjects.add(subject);
     }
 
-    public boolean isAvaliable(int number) {
-        return avaliability.get(number);
+    public boolean isAvailable(int day) {
+        return availability.get(day);
     }
 
     public void printAvailability() {
-        System.out.printf("Availabity for tutor %s\n", this.getName());
-        Calendar.printCalendar(this.avaliability, 2);
+        System.out.printf("Availability for tutor %s\n", getName());
+        Calendar.printCalendar(availability, 2);
     }
 
-    public void randomizeAvailabity() {
+    public void randomizeAvailability() {
         Random random = new Random();
-        for (int i = 0; i < 31; i++) {
-            if (random.nextBoolean())
-                this.avaliability.set(i);
+        for (int day = 0; day < DAYS_IN_MONTH; day++) {
+            if (random.nextBoolean()) {
+                availability.set(day);
+            }
         }
     }
 
     public void setTutoringSubjects(List<String> subjects) {
-        this.tutoringSubjects = subjects;
+        tutoringSubjects = new ArrayList<>(subjects);
     }
 
     public void addSubject(String subject) {
-        tutoringSubjects.add(subject);
+        addTutoringSubject(subject);
     }
-
 }

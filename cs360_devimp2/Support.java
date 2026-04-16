@@ -1,9 +1,11 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Support {
-    private List<String> ticketList = new ArrayList<String>();
+    private final List<String> tickets = new ArrayList<>();
+
     public void sendTicket(String ticket) {
-        ticketList.add(ticket);
+        tickets.add(ticket);
         System.out.println("Sent ticket to support");
     }
 }
