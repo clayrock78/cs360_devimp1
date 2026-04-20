@@ -1,14 +1,15 @@
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 public class Main {
 
-    private static Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
 
-    private static TutorCatalog tutorCatalog = new TutorCatalog();
-    private static SchedulerService schedulerService = new SchedulerService();
-    private static NotificationService notificationService = new NotificationService();
-    private static AppointmentService appointmentService = new AppointmentService(schedulerService, notificationService);
+    private static final TutorCatalog tutorCatalog = new TutorCatalog();
+    private static final SchedulerService schedulerService = new SchedulerService();
+    private static final NotificationService notificationService = new NotificationService();
+    private static final AppointmentService appointmentService = new AppointmentService(schedulerService, notificationService);
 
     public static void main(String[] args) {
 
@@ -27,16 +28,10 @@ public class Main {
 
     private static User login() {
 
-        System.out.print("Login as (student/tutor): ");
-        String role = scanner.nextLine();
+        String role = prompt("Login as (student/tutor): ");
+        String email = prompt("Enter email: ");
+        String name = prompt("Enter name: ");
 
-        System.out.print("Enter email: ");
-        String email = scanner.nextLine();
-
-        System.out.print("Enter name: ");
-        String name = scanner.nextLine();
-
-        // AuthService stub
         if (role.equalsIgnoreCase("student")) {
             return new Student(name, email);
         }
@@ -44,82 +39,52 @@ public class Main {
         return new Tutor(name, email);
     }
 
-    /* ------------------------------
-       STUDENT FLOW
-    ------------------------------ */
     private static void studentMenu(Student student) {
 
         while (true) {
-
-            System.out.println("\nStudent Menu");
-            System.out.println("1 Search tutor by name");
-            System.out.println("2 Search tutors by subject");
-            System.out.println("3 Book appointment");
-            System.out.println("4 Leave review");
-            System.out.println("5 View tutor availability");
-            System.out.println("0 Exit");
-
-            int choice = Integer.parseInt(scanner.nextLine());
+            printStudentMenu();
+            int choice = readMenuChoice();
 
             switch (choice) {
-
                 case 1:
-                    try {
-                        searchTutorByName();
-                    } catch (Exception e) {
-                        System.out.println("No tutors found.");
-                    }
-                    ;
+                    searchTutorByName();
                     break;
-
                 case 2:
-                    try {
-                        searchTutorBySubject();
-                    } catch (Exception e) {
-                        System.out.println("No tutors found");
-                    }
+                    searchTutorBySubject();
                     break;
-
                 case 3:
                     bookAppointment(student);
                     break;
-
                 case 4:
                     leaveReview(student);
                     break;
-
                 case 5:
                     printTutorAvailability();
                     break;
-
                 case 0:
                     return;
+                default:
+                    System.out.println("Invalid menu option.");
+                    break;
             }
         }
     }
 
     private static void searchTutorByName() {
 
-        System.out.print("Enter tutor name: ");
-        String name = scanner.nextLine();
+        String name = prompt("Enter tutor name: ");
 
         try {
-
             List<Tutor> tutors = tutorCatalog.findTutorsByName(name);
-
-            for (Tutor tutor: tutors)
-                System.out.println("Tutor found: " + tutor.getName());
-
+            printTutorNames("Tutor found:", tutors);
         } catch (TutorNotFoundException e) {
-
             System.out.println("Tutor not found.");
         }
     }
 
     private static void searchTutorBySubject() {
 
-        System.out.print("Enter subject: ");
-        String subject = scanner.nextLine();
+        String subject = prompt("Enter subject: ");
 
         List<String> subjects = new ArrayList<>();
         subjects.add(subject);
@@ -131,31 +96,21 @@ public class Main {
             return;
         }
 
-        System.out.println("Matching Tutors:");
-
-        for (Tutor tutor : matches) {
-            System.out.println("- " + tutor.getName());
-        }
+        printTutorNames("Matching Tutors:", matches);
     }
 
     private static void bookAppointment(Student student) {
 
-        System.out.print("Tutor name: ");
-        String tutorName = scanner.nextLine();
+        String tutorName = prompt("Tutor name: ");
 
         try {
-
             Tutor tutor = tutorCatalog.findTutorByName(tutorName);
+            int date = Integer.parseInt(prompt("Enter date (1-31): "));
 
-            System.out.print("Enter date (1-31): ");
-            int date = Integer.parseInt(scanner.nextLine());
-
-            Appointment appt
-                    = appointmentService.bookAppointment(student, tutor, date);
+            Appointment appointment = appointmentService.bookAppointment(student, tutor, date);
 
             System.out.println("Appointment booked with "
-                    + tutor.getName() + " on day " + appt.getDate());
-
+                    + tutor.getName() + " on day " + appointment.getDate());
         } catch (TutorNotFoundException e) {
             System.out.println("Tutor not found.");
         } catch (Exception e) {
@@ -164,97 +119,107 @@ public class Main {
     }
 
     private static void printTutorAvailability() {
-        System.out.print("Enter tutor name: ");
-        String name = scanner.nextLine();
+        String name = prompt("Enter tutor name: ");
 
         try {
-
             List<Tutor> tutors = tutorCatalog.findTutorsByName(name);
 
-            for (Tutor tutor: tutors) {
+            for (Tutor tutor : tutors) {
                 tutor.printAvailability();
             }
-
         } catch (TutorNotFoundException e) {
-
             System.out.println("Tutor not found.");
         }
     }
 
     private static void leaveReview(Student student) {
 
-        System.out.print("Tutor name: ");
-        String tutorName = scanner.nextLine();
+        String tutorName = prompt("Tutor name: ");
 
         try {
-
             Tutor tutor = tutorCatalog.findTutorByName(tutorName);
-
-            System.out.print("Write review: ");
-            String review = scanner.nextLine();
+            String review = prompt("Write review: ");
 
             System.out.println("Review saved.");
-
             notificationService.notifyReview(tutor, student, review);
-
         } catch (Exception e) {
-
             System.out.println("Failed to submit review.");
         }
     }
 
-
-    /* ------------------------------
-       TUTOR FLOW
-    ------------------------------ */
     private static void tutorMenu(Tutor tutor) {
 
         while (true) {
-
-            System.out.println("\nTutor Menu");
-            System.out.println("1 View appointments");
-            System.out.println("2 Confirm appointment");
-            System.out.println("0 Exit");
-
-            int choice = Integer.parseInt(scanner.nextLine());
+            printTutorMenu();
+            int choice = readMenuChoice();
 
             switch (choice) {
-
                 case 1:
                     viewAppointments(tutor);
                     break;
-
                 case 2:
                     confirmAppointment();
                     break;
-
                 case 0:
                     return;
+                default:
+                    System.out.println("Invalid menu option.");
+                    break;
             }
         }
     }
 
     private static void viewAppointments(Tutor tutor) {
 
-        List<Appointment> appts
-                = appointmentService.getAppointmentsForTutor(tutor);
+        List<Appointment> appointments = appointmentService.getAppointmentsForTutor(tutor);
 
-        if (appts.isEmpty()) {
+        if (appointments.isEmpty()) {
             System.out.println("No appointments scheduled.");
             return;
         }
 
-        for (Appointment a : appts) {
-
+        for (Appointment appointment : appointments) {
             System.out.println(
-                    "Student: " + a.getStudent().getName()
-                    + " | Day: " + a.getDate()
+                    "Student: " + appointment.getStudent().getName()
+                            + " | Day: " + appointment.getDate()
             );
         }
     }
 
     private static void confirmAppointment() {
-
         System.out.println("Appointment confirmed.");
+    }
+
+    private static String prompt(String message) {
+        System.out.print(message);
+        return scanner.nextLine();
+    }
+
+    private static int readMenuChoice() {
+        return Integer.parseInt(scanner.nextLine());
+    }
+
+    private static void printStudentMenu() {
+        System.out.println("\nStudent Menu");
+        System.out.println("1 Search tutor by name");
+        System.out.println("2 Search tutors by subject");
+        System.out.println("3 Book appointment");
+        System.out.println("4 Leave review");
+        System.out.println("5 View tutor availability");
+        System.out.println("0 Exit");
+    }
+
+    private static void printTutorMenu() {
+        System.out.println("\nTutor Menu");
+        System.out.println("1 View appointments");
+        System.out.println("2 Confirm appointment");
+        System.out.println("0 Exit");
+    }
+
+    private static void printTutorNames(String heading, List<Tutor> tutors) {
+        System.out.println(heading);
+        for (Tutor tutor : tutors) {
+            System.out.println("- " + tutor.getName());
+        }
     }
 }

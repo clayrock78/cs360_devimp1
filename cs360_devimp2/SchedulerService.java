@@ -3,24 +3,21 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class SchedulerService {
+public class SchedulerService implements TutorScheduler {
 
-    private Map<Integer, Set<Integer>> tutorSchedule = new HashMap<>();
+    private final Map<Integer, Set<Integer>> reservedDatesByTutorId = new HashMap<>();
 
+    @Override
     public boolean isAvailable(Tutor tutor, int date) {
-
-        Set<Integer> reserved = tutorSchedule.get(tutor.getID());
-
-        if (reserved == null) return true;
-
-        return !reserved.contains(date);
+        return !getReservedDates(tutor).contains(date);
     }
 
+    @Override
     public void reserveSlot(Tutor tutor, int date) {
-
-        tutorSchedule.putIfAbsent(tutor.getID(), new HashSet<>());
-
-        tutorSchedule.get(tutor.getID()).add(date);
+        getReservedDates(tutor).add(date);
     }
 
+    private Set<Integer> getReservedDates(Tutor tutor) {
+        return reservedDatesByTutorId.computeIfAbsent(tutor.getId(), key -> new HashSet<>());
+    }
 }

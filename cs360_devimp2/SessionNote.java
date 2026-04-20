@@ -1,21 +1,25 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
 public class SessionNote {
-    List<String> notes = new ArrayList<String>();
+    private final List<String> notes = new ArrayList<>();
 
     public void setNote(String note) {
         notes.add(note);
     }
 
     public String getNotes() {
-        StringBuilder string = new StringBuilder();
-        for (int i = 0; i < notes.size(); i++) {
-            string.append(notes.get(i) + "\n");
+        StringBuilder noteText = new StringBuilder();
+        for (String note : notes) {
+            noteText.append(note).append("\n");
         }
-        return string.toString();
+        return noteText.toString();
     }
-    private String note;
 
     public String getNote() {
-        return this.note;
+        if (notes.isEmpty()) {
+            return null;
+        }
+        return notes.get(notes.size() - 1);
     }
 }
