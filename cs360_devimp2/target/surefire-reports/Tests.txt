@@ -1,0 +1,11 @@
+-------------------------------------------------------------------------------
+Test set: Tests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.387 s <<< FAILURE! -- in Tests
+Tests.studentCanMakeAppointment -- Time elapsed: 0.255 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "src.main.java.AppointmentService.bookAppointment(src.main.java.Student, src.main.java.Tutor, int)" because "this.appointmentService" is null
+	at Tests.studentCanMakeAppointment(Tests.java:65)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
