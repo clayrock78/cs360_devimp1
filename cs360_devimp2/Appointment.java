@@ -1,9 +1,12 @@
 public class Appointment {
 
-    private Student student;
-    private Tutor tutor;
+    private static final int MIN_DATE = 1;
+    private static final int MAX_DATE = 31;
+
+    private final Student student;
+    private final Tutor tutor;
     private int date;
-    private Boolean confirmed = false;
+    private boolean confirmed;
 
     public Appointment(Student student, Tutor tutor) {
         this.student = student;
@@ -22,16 +25,22 @@ public class Appointment {
         return date;
     }
 
-    
-public void setDate(int date) {
-        if (0 < date || date > 31) {
-            throw new IllegalArgumentException();
-        }
+    public void setDate(int date) {
+        validateDate(date);
         this.date = date;
     }
 
-public void markAsConfirmed() {
-    // TODO Auto-generated method stub
-    this.confirmed = true;
-}
+    public boolean isConfirmed() {
+        return confirmed;
+    }
+
+    public void markAsConfirmed() {
+        this.confirmed = true;
+    }
+
+    private void validateDate(int date) {
+        if (date < MIN_DATE || date > MAX_DATE) {
+            throw new IllegalArgumentException("Date must be between 1 and 31.");
+        }
+    }
 }
